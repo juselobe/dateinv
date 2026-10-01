@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Наше свидание 💗</title>
+<style>
+  :root{
+    --bg1:#ee626f;
+    --bg2:#ff9564;
+    --card:#f18a83cc;
+    --card-border:#ffffff29;
+    --text:#fff7f7;
+    --muted:#ffe3df;
+    --shadow:0 22px 60px rgba(111,35,57,.28), 0 8px 24px rgba(75,25,45,.2);
+    --radius:26px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:Inter,ui-rounded,"SF Pro Rounded","Segoe UI",system-ui,sans-serif;
+    color:var(--text);
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 18% 18%, rgba(255,255,255,.10), transparent 28%),
+      radial-gradient(circle at 78% 20%, rgba(210,66,126,.18), transparent 28%),
+      linear-gradient(145deg,var(--bg1),var(--bg2));
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0; pointer-events:none;
+    background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(87,25,46,.08));
+  }
+  button,input{font:inherit}
+  button{border:0}
+  .app{
+    height:100%;
+    display:grid;
+    place-items:center;
+    padding:24px;
+    position:relative;
+    isolation:isolate;
+  }
+  .float-layer{position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:-1}
+  .floater{
+    position:absolute;
+    font-size:clamp(14px,2vw,24px);
+    opacity:.5;
+    animation:drift var(--t) linear infinite;
+    filter:drop-shadow(0 4px 8px rgba(85,29,49,.12));
+  }
+  @keyframes drift{
+    0%{transform:translate3d(0,105vh,0) rotate(0)}
+    100%{transform:translate3d(var(--dx),-20vh,0) rotate(360deg)}
+  }
+
+  .stage{
+    width:min(92vw,460px);
+    min-height:560px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .screen{
+    width:100%;
+    display:none;
+    animation:enter .55s cubic-bezier(.2,.8,.2,1);
+  }
+  .screen.active{display:block}
+  @keyframes enter{
+    from{opacity:0; transform:translateY(14px) scale(.98)}
+    to{opacity:1; transform:none}
+  }
+
+  .kicker{
+    text-align:center;
+    font-size:clamp(15px,2.4vw,18px);
+    font-weight:800;
+    letter-spacing:-.02em;
+    color:#ffe9e5;
+    margin-bottom:16px;
+  }
+
+  .card{
+    width:100%;
+    background:linear-gradient(180deg,rgba(255,169,157,.47),rgba(225,107,119,.36));
+    border:1px solid var(--card-border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    padding:30px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::after{
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(135deg,rgba(255,255,255,.16),transparent 35%,transparent 65%,rgba(255,255,255,.06));
+    pointer-events:none;
+  }
+
+  .mascot{
+    width:126px; height:110px;
+    margin:0 auto 12px;
+    position:relative;
+  }
+  .cat{
+    position:absolute; left:20px; bottom:8px;
+    width:70px; height:66px;
+    border-radius:42% 42% 36% 36%;
+    background:#7a858f;
+    border:3px solid rgba(72,59,70,.55);
+  }
+  .cat:before,.cat:after{
+    content:""; position:absolute; top:-14px; width:26px; height:26px;
+    background:#7a858f; border:3px solid rgba(72,59,70,.55);
+    transform:rotate(45deg); z-index:-1;
+  }
+  .cat:before{left:4px}.cat:after{right:4px}
+  .face{position:absolute; width:5px; height:5px; border-radius:50%; background:#493e46; top:28px; left:20px; box-shadow:25px 0 #493e46}
+  .mouth{position:absolute; width:14px; height:7px; border-bottom:2px solid #594a52; border-radius:0 0 50% 50%; left:26px; top:36px}
+  .blush{position:absolute; width:9px;height:5px;border-radius:50%;background:#e07b84;left:9px;top:37px;box-shadow:38px 0 #e07b84}
+  .kitty{
+    position:absolute; right:7px; bottom:2px;
+    width:48px; height:46px;
+    border-radius:44% 44% 38% 38%;
+    background:#fff6f0;
+    border:3px solid rgba(102,78,86,.4);
+  }
+  .kitty:before,.kitty:after{
+    content:""; position:absolute; top:-9px; width:17px; height:17px;
+    background:#fff6f0; border:3px solid rgba(102,78,86,.4);
+    transform:rotate(45deg); z-index:-1;
+  }
+  .kitty:before{left:2px}.kitty:after{right:2px}
+  .kitty .face{top:19px;left:12px;transform:scale(.7);transform-origin:left top}
+  .heart{
+    position:absolute; right:13px; top:5px; font-size:28px;
+    animation:pulse 1.3s ease-in-out infinite;
+  }
+  @keyframes pulse{50%{transform:scale(1.18)}}
+
+  h1{
+    margin:4px 0 8px;
+    text-align:center;
+    font-size:clamp(30px,7vw,42px);
+    line-height:.98;
+    letter-spacing:-.055em;
+  }
+  .sub{
+    margin:0 auto 22px;
+    text-align:center;
+    max-width:320px;
+    color:var(--muted);
+    line-height:1.45;
+    font-size:14px;
+  }
+
+  .btn{
+    border-radius:999px;
+    padding:13px 19px;
+    min-height:48px;
+    cursor:pointer;
+    font-weight:850;
+    transition:.2s ease;
+    position:relative;
+    z-index:3;
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn:active{transform:translateY(0) scale(.98)}
+  .primary{
+    background:#fff2f0;
+    color:#c05265;
+    box-shadow:0 10px 24px rgba(115,45,60,.20);
+  }
+  .ghost{
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    border:1px solid rgba(255,255,255,.20);
+  }
+  .actions{display:flex; gap:10px; justify-content:center; position:relative; min-height:50px}
+  #askActions{min-height:180px;align-items:flex-start;overflow:visible}
+  #askActions .primary{position:absolute;left:20%;top:0}
+  #noBtn{position:absolute;left:56%;top:0;transition:left .08s linear,top .08s linear,transform .08s linear}
+
+  .progress{
+    display:flex; justify-content:center; gap:6px; margin-bottom:18px;
+  }
+  .dot{width:7px;height:7px;border-radius:99px;background:rgba(255,255,255,.28);transition:.25s}
+  .dot.on{width:22px;background:#fff4f1}
+
+  .field{margin-top:12px}
+  .field label{
+    display:block; font-size:12px; font-weight:800; color:#ffe6e1; margin:0 0 7px 4px;
+  }
+  .field input{
+    width:100%;
+    color:#fff;
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:14px;
+    padding:13px 14px;
+    outline:none;
+  }
+  .field input:focus{border-color:#fff6f2; box-shadow:0 0 0 3px rgba(255,255,255,.10)}
+  input::-webkit-calendar-picker-indicator{filter:invert(1); opacity:.8}
+
+  .grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:18px 0;
+  }
+  .choice{
+    cursor:pointer;
+    border-radius:16px;
+    padding:16px 10px;
+    min-height:98px;
+    display:grid; place-items:center;
+    gap:5px;
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.15);
+    color:#fff;
+    transition:.2s ease;
+  }
+  .choice:hover{transform:translateY(-2px);background:rgba(255,255,255,.15)}
+  .choice.selected{background:rgba(255,250,248,.22);border-color:rgba(255,255,255,.72);box-shadow:0 8px 18px rgba(105,39,53,.15)}
+  .choice .icon{font-size:30px}
+  .choice strong{font-size:13px}
+
+  .summary{
+    margin:18px 0;
+    border-radius:16px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.15);
+    background:rgba(255,255,255,.08);
+  }
+  .row{
+    display:flex; justify-content:space-between; gap:14px;
+    padding:12px 14px;
+    border-bottom:1px solid rgba(255,255,255,.11);
+    font-size:13px;
+  }
+  .row:last-child{border-bottom:0}
+  .row span:first-child{color:#ffe0db}
+  .row b{text-align:right}
+
+  .tiny{font-size:11px; text-align:center; color:#ffd9d3; margin-top:12px}
+  .top-title{
+    position:fixed; top:6vh; left:0; right:0; text-align:center;
+    color:rgba(255,255,255,.86);
+    font-weight:800; font-size:clamp(16px,2vw,20px);
+    pointer-events:none;
+  }
+  .toast{
+    position:fixed; left:50%; bottom:24px; transform:translate(-50%,20px);
+    background:#fff6f3; color:#b84f61; font-weight:800; font-size:13px;
+    padding:11px 16px; border-radius:999px; opacity:0; pointer-events:none;
+    box-shadow:0 10px 24px rgba(88,31,51,.18); transition:.25s;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  @media(max-width:520px){
+    .app{padding:16px}
+    .stage{min-height:510px}
+    .card{padding:24px 20px}
+    .top-title{top:24px}
+  }
+</style>
+</head>
+<body>
+<div class="top-title" id="topTitle">За этим стеклом — кое-что личное 💗</div>
+
+<div class="app">
+  <div class="float-layer" id="floatLayer"></div>
+  <main class="stage">
+    <section class="screen active" data-screen="0">
+      <div class="card">
+        <div class="mascot">
+          <div class="cat"><i class="face"></i><i class="mouth"></i><i class="blush"></i></div>
+          <div class="kitty"><i class="face"></i></div>
+          <div class="heart">💗</div>
+        </div>
+        <h1>Пойдёшь со мной<br>на свидание?</h1>
+        <p class="sub">У меня есть маленький план. Осталось узнать только один ответ.</p>
+        <div class="actions" id="askActions">
+          <button class="btn primary" onclick="nextScreen()">Да 💗</button>
+          <button class="btn ghost" id="noBtn">Нет 🙈</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="1">
+      <div class="progress"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
+      <div class="card">
+        <div class="mascot" style="height:90px">
+          <div class="cat" style="left:42px"><i class="face"></i><i class="mouth"></i><i class="blush"></i></div>
+          <div class="heart" style="right:48px">✨</div>
+        </div>
+        <h1 style="font-size:34px">Когда тебе удобно?</h1>
+        <p class="sub">Выбери дату и время — я всё запомню.</p>
+        <div class="field">
+          <label>Дата</label>
+          <input id="dateInput" type="date">
+        </div>
+        <div class="field">
+          <label>Время</label>
+          <input id="timeInput" type="time" value="19:00">
+        </div>
+        <div class="actions" style="margin-top:18px">
+          <button class="btn ghost" onclick="prevScreen()">Назад</button>
+          <button class="btn primary" onclick="saveWhen()">Дальше →</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="2">
+      <div class="progress"><span class="dot"></span><span class="dot on"></span><span class="dot"></span></div>
+      <div class="card">
+        <div class="mascot" style="height:88px">
+          <div class="kitty" style="width:64px;height:60px;left:50%;right:auto;transform:translateX(-50%)"><i class="face" style="transform:scale(.9)"></i></div>
+          <div class="heart" style="right:70px">💞</div>
+        </div>
+        <h1 style="font-size:34px">Чем займёмся?</h1>
+        <p class="sub">Можно выбрать что-то одно. Или потом передумать — это тоже разрешено.</p>
+        <div class="grid" id="activities">
+          <button class="choice" data-value="Пицца 🍕"><span class="icon">🍕</span><strong>Пицца</strong></button>
+          <button class="choice" data-value="Кофе ☕"><span class="icon">☕</span><strong>Кофе</strong></button>
+          <button class="choice" data-value="Кино 🎬"><span class="icon">🎬</span><strong>Кино</strong></button>
+          <button class="choice" data-value="Велопрогулка 🚲"><span class="icon">🚲</span><strong>Велопрогулка</strong></button>
+        </div>
+        <div class="actions">
+          <button class="btn ghost" onclick="prevScreen()">Назад</button>
+          <button class="btn primary" onclick="saveActivity()">Дальше →</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="3">
+      <div class="progress"><span class="dot"></span><span class="dot"></span><span class="dot on"></span></div>
+      <div class="card">
+        <div class="mascot" style="height:100px">
+          <div class="kitty" style="width:68px;height:64px;left:50%;right:auto;transform:translateX(-50%)"><i class="face" style="transform:scale(.95)"></i></div>
+          <div class="heart" style="right:62px">💛</div>
+        </div>
+        <h1 style="font-size:34px">Ура! Это свидание</h1>
+        <p class="sub">План готов. Теперь осталось только дождаться встречи.</p>
+        <div class="summary">
+          <div class="row"><span>Дата</span><b id="sumDate">—</b></div>
+          <div class="row"><span>Время</span><b id="sumTime">—</b></div>
+          <div class="row"><span>План</span><b id="sumActivity">—</b></div>
+        </div>
+        <button class="btn primary" style="width:100%" onclick="downloadInvite()">💌 Сохранить приглашение</button>
+        <div class="tiny">Сделано специально для тебя ✨</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast">Выбери вариант 💗</div>
+
+<script>
+const state = { date:"", time:"19:00", activity:"" };
+let current = 0;
+const screens = [...document.querySelectorAll(".screen")];
+
+function showScreen(i){
+  current = Math.max(0, Math.min(i, screens.length-1));
+  screens.forEach((s,idx)=>s.classList.toggle("active", idx===current));
+  const titles = [
+    "За этим стеклом — кое-что личное 💗",
+    "Выбираем идеальный момент ✨",
+    "Осталось самое приятное 😌",
+    "План свидания готов 💞"
+  ];
+  document.getElementById("topTitle").textContent = titles[current];
+}
+function nextScreen(){ showScreen(current+1) }
+function prevScreen(){ showScreen(current-1) }
+
+function toast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(window.__t);
+  window.__t=setTimeout(()=>el.classList.remove("show"),1800);
+}
+
+const no = document.getElementById("noBtn");
+const wrap = document.getElementById("askActions");
+function dodge(){
+  const maxX = Math.max(0, wrap.clientWidth - no.offsetWidth);
+  const maxY = Math.max(0, wrap.clientHeight - no.offsetHeight);
+  no.style.left = Math.random()*maxX + "px";
+  no.style.top = Math.random()*maxY + "px";
+  no.style.transform = `rotate(${(Math.random()-.5)*10}deg)`;
+  no.textContent = ["Точно? 🥺","Подумай ещё 😶","Ну пожалуйста 😭","Не поймаешь 😌"][Math.floor(Math.random()*4)];
+}
+wrap.addEventListener("pointermove", (e)=>{
+  const r=no.getBoundingClientRect();
+  const cx=r.left+r.width/2, cy=r.top+r.height/2;
+  if(Math.hypot(e.clientX-cx,e.clientY-cy)<105) dodge();
+});
+no.addEventListener("pointerenter", dodge);
+no.addEventListener("pointerdown", (e)=>{e.preventDefault(); dodge();});
+no.addEventListener("click", (e)=>{e.preventDefault(); dodge();});
+no.addEventListener("touchstart", (e)=>{e.preventDefault(); dodge();},{passive:false});
+
+function saveWhen(){
+  const d = document.getElementById("dateInput").value;
+  const t = document.getElementById("timeInput").value;
+  if(!d){ toast("Сначала выбери дату 💗"); return; }
+  state.date=d; state.time=t || "19:00";
+  nextScreen();
+}
+
+document.querySelectorAll(".choice").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".choice").forEach(x=>x.classList.remove("selected"));
+    btn.classList.add("selected");
+    state.activity=btn.dataset.value;
+  })
+});
+
+function saveActivity(){
+  if(!state.activity){ toast("Выбери, чем займёмся ✨"); return; }
+  const d = new Date(state.date+"T00:00:00");
+  document.getElementById("sumDate").textContent =
+    d.toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"});
+  document.getElementById("sumTime").textContent=state.time;
+  document.getElementById("sumActivity").textContent=state.activity;
+  confettiBurst();
+  nextScreen();
+}
+
+function confettiBurst(){
+  for(let i=0;i<26;i++){
+    const e=document.createElement("div");
+    e.textContent=["💗","✨","💞","🦋","🌸"][Math.floor(Math.random()*5)];
+    e.style.position="fixed";
+    e.style.left=(45+Math.random()*10)+"vw";
+    e.style.top="45vh";
+    e.style.zIndex=9;
+    e.style.pointerEvents="none";
+    e.style.transition="all 1.2s cubic-bezier(.1,.8,.2,1)";
+    document.body.appendChild(e);
+    requestAnimationFrame(()=>{
+      e.style.transform=`translate(${(Math.random()-.5)*80}vw,${(Math.random()-.55)*90}vh) rotate(${Math.random()*720}deg)`;
+      e.style.opacity="0";
+    });
+    setTimeout(()=>e.remove(),1300);
+  }
+}
+
+function downloadInvite(){
+  const d = new Date(state.date+"T00:00:00");
+  const text =
+`💗 Наше свидание
+
+Дата: ${d.toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"})}
+Время: ${state.time}
+План: ${state.activity}
+
+До встречи ✨`;
+  const blob=new Blob([text],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="наше-свидание.txt";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+const fl = document.getElementById("floatLayer");
+const symbols=["💗","✨","🦋","🌸","💞","♡"];
+for(let i=0;i<22;i++){
+  const s=document.createElement("span");
+  s.className="floater";
+  s.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+  s.style.left=Math.random()*100+"%";
+  s.style.setProperty("--t",(12+Math.random()*13)+"s");
+  s.style.setProperty("--dx",((Math.random()-.5)*180)+"px");
+  s.style.animationDelay=(-Math.random()*18)+"s";
+  fl.appendChild(s);
+}
+
+const today = new Date();
+const min = new Date(today.getTime()-today.getTimezoneOffset()*60000).toISOString().split("T")[0];
+document.getElementById("dateInput").min=min;
+</script>
+</body>
+</html>
