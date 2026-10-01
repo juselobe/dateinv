@@ -427,8 +427,22 @@ function saveActivity(){
     d.toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"});
   document.getElementById("sumTime").textContent=state.time;
   document.getElementById("sumActivity").textContent=state.activity;
-  confettiBurst();
   nextScreen();
+  sendDateChoice();
+  confettiBurst();
+}
+
+async function sendDateChoice(){
+  try{
+    const res = await fetch("/api/send-date", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({date:state.date,time:state.time,activity:state.activity})
+    });
+    if(!res.ok) throw new Error("send failed");
+  }catch(err){
+    console.error("Notification error", err);
+  }
 }
 
 function confettiBurst(){
