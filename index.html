@@ -432,15 +432,23 @@ function saveActivity(){
   confettiBurst();
 }
 
+let notificationSent = false;
 async function sendDateChoice(){
+  if(notificationSent || !state.date || !state.time || !state.activity) return;
+  notificationSent = true;
   try{
     const res = await fetch("/api/send-date", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
+      keepalive:true,
       body:JSON.stringify({date:state.date,time:state.time,activity:state.activity})
     });
-    if(!res.ok) throw new Error("send failed");
+    if(!res.ok){
+      const info = await res.json().catch(()=>({}));
+      throw new Error(`send-date ${res.status}: ${info.error || "unknown error"}`);
+    }
   }catch(err){
+    notificationSent = false;
     console.error("Notification error", err);
   }
 }
