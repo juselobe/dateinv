@@ -437,9 +437,13 @@ async function sendDateChoice(){
     const res = await fetch("/api/send-date", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({date:state.date,time:state.time,activity:state.activity})
+      body:JSON.stringify({date:state.date,time:state.time,activity:state.activity}),
+      keepalive:true
     });
-    if(!res.ok) throw new Error("send failed");
+    if(!res.ok){
+      const info = await res.json().catch(()=>({}));
+      throw new Error(`send failed (${res.status}): ${info.error || "unknown"}`);
+    }
   }catch(err){
     console.error("Notification error", err);
   }
